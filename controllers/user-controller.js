@@ -1,6 +1,10 @@
 const { response, request } = require( 'express' );
+const bcrypt = require('bcryptjs');
+const { validationResult } = require('express-validator');
+
 const User = require( '../models/model-usuario' );
 
+//Metodo GET para extraer datos de la Base de Datos
 const getUser = ( req = request, res = response ) => {
 
     const { q, nombre = 'no mane', apikey, page, limit } = req.query;
@@ -15,25 +19,38 @@ const getUser = ( req = request, res = response ) => {
     } );
 }
 
+//Metodo POST para registrar en la Base de Datos
 const postUser = ( req, res = response ) => {
-
-    const body = req.body;
-
-    const user = new User( body );
     
-     user.save( {
-        nameUser: body.nameUser,
-        emailUser:body.emailUser,
-        passwordUser:body.passwordUser,
-        rolUser:body.rolUser,
-        googleUser:body.googleUser
-     } );
+    //Validar si es un correo
+    const errors = validationResult(req);
+    if( !errors.isEmpty() ) {
+
+        return res.status(400).json( errors );
+    }
+
+    const { nameUser, emailUser, passwordUser, rolUser } = req.body;
+    const user = new User( { nameUser, emailUser, passwordUser, rolUser } );
+
+    //Verificar si el Correo Existe
+    const emailExiste = User.findOne( { emailUser } );
+    if( emailExiste ) {
+        return res.status(400).json({
+            message: 'Este Correo ya esta registrado'
+        });
+    }
+    //Encriptar la contraseña
+    const salt = bcrypt.genSaltSync();
+    user.passwordUser = bcrypt.hashSync( passwordUser, salt );
+    //Guardar en Base de Datos
+     user.save();
 
     res.json( {
         user
     } );
 }
 
+//Metodo PUT
 const putUser = ( req, res = response ) => {
 
     const id = req.params.id
@@ -44,6 +61,7 @@ const putUser = ( req, res = response ) => {
     } );
 }
 
+//Metodo Patch
 const patchUser = ( req, res = response ) => {
 
     res.json( {
@@ -51,6 +69,7 @@ const patchUser = ( req, res = response ) => {
     } );
 }
 
+//Metodo DELETE para borrar un registro permanentemente
 const deleteUser = ( req, res = response ) => {
 
     res.json( {
