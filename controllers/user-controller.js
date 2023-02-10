@@ -15,15 +15,21 @@ const getUser = ( req = request, res = response ) => {
     } );
 }
 
-const postUser = async( req, res = response ) => {
+const postUser = ( req, res = response ) => {
 
     const body = req.body;
-    const user = new User( body );
 
-    await user.save();
+    const user = new User( body );
+    
+     user.save( {
+        nameUser: body.nameUser,
+        emailUser:body.emailUser,
+        passwordUser:body.passwordUser,
+        rolUser:body.rolUser,
+        googleUser:body.googleUser
+     } );
 
     res.json( {
-        message: 'post API - Controller',
         user
     } );
 }

@@ -1,13 +1,15 @@
-require('dotenv').config();
-const mongoose = require( 'mongoose' );
+const mongoose = require('mongoose');
 
-const dbConnection = async() => {
+const dbConnection = () => {
 
     try {
 
-        await mongoose.createConnection(process.env.MONGODB_CNN).asPromise();
-
-        console.log('Conexion Exitosa !!!');
+        mongoose.set("strictQuery", false);
+        
+        mongoose.connect(process.env.MONGODB_CNN,{
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
         
     } catch (error) {
         console.log(error);
