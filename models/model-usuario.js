@@ -1,4 +1,9 @@
+//---------------------------IMPORTACIONES---------------------------//
+
+//Importaciones de paquetes de dependencias
 const { Schema, model } = require( 'mongoose' );
+
+//---------------------------ELABORACION DE FUNSIONES FLECHAS---------------------------//
 
 const UserSchema = new Schema( { 
     nameUser: {
@@ -20,7 +25,7 @@ const UserSchema = new Schema( {
     rolUser: {
         type: String,
         required: true,
-        enum: ['ADMIN_ROLE', 'USER_ROLE']
+        //enum: ['ADMIN_ROLE', 'USER_ROLE']
     },
     stateUser: {
         type: Boolean,
@@ -31,5 +36,12 @@ const UserSchema = new Schema( {
         default: false
     }
 } );
+
+UserSchema.methods.toJSON = function() {
+    const{ __v, passwordUser, ...user } = this.toObject();
+    return user
+}
+
+//---------------------------EXPORTACIONES DE FUNSIONES O VARIBALES---------------------------//
 
 module.exports = model( 'Users', UserSchema );

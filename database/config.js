@@ -1,12 +1,17 @@
+//---------------------------IMPORTACIONES---------------------------//
+
+//Importaciones de paquetes de dependencias
 const mongoose = require('mongoose');
 
-const dbConnection = () => {
+//---------------------------ELABORACION DE FUNSIONES FLECHA ASINCRONAS---------------------------//
+
+const dbConnection = async() => {
 
     try {
 
         mongoose.set("strictQuery", false);
         
-        mongoose.connect(process.env.MONGODB_CNN,{
+        await mongoose.connect(process.env.MONGODB_CNN,{
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
@@ -17,6 +22,7 @@ const dbConnection = () => {
     }
 }
 
+//---------------------------EXPORTACIONES DE FUNSIONES O VARIBALES---------------------------//
 
 module.exports = {
     dbConnection
