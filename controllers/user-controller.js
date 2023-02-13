@@ -72,7 +72,7 @@ const patchUser = ( req, res = response ) => {
 //Metodo DELETE para borrar un registro permanentemente
 const deleteUser = async( req, res = response ) => {
 
-    const { id } = req.params
+    const { id } = req.params;
 
     //Borrar Fisicamente el registro de la base de datos
     //const user = await User.findByIdAndDelete( id );

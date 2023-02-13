@@ -6,6 +6,8 @@ const { check } = require('express-validator');
 
 //Importaciones de funsiones ubicadios en otras carpetas
 const { validarCampos } = require( '../middlewares/validar-campos-usuario' );
+const { validarJWT } = require('../middlewares/validar-jwt');
+const { esAminRol } = require('../middlewares/validar-roles');
 const { getUser, putUser, postUser, patchUser, deleteUser } = require('../controllers/user-controller');
 const { esRolValido, emailExists, existsIDbyUser } = require('../helpers/db-validators');
 
@@ -41,6 +43,8 @@ router.post('/',[
 router.patch('/', patchUser);
 
 router.delete('/:id',[
+    validarJWT,
+    esAminRol,
     check('id', 'ID no valido').isMongoId(),
     check('id').custom( existsIDbyUser ),
     validarCampos
