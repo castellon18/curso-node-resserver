@@ -10,17 +10,19 @@ const User = require( '../models/model-usuario' );
 //---------------------------ELABORACION DE FUNSIONES FLECHA ASINCRONAS O SINCRONAS---------------------------//
 
 //Metodo GET para extraer datos de la Base de Datos
-const getUser = ( req = request, res = response ) => {
+const getUser = async( req = request, res = response ) => {
 
-    const { q, nombre = 'no mane', apikey, page, limit } = req.query;
+    const query = { stateUser: true };
+    const { limite = 5, desde = 0 } = req.query;
 
+    const [ total, users] = await Promise.all([
+        User.countDocuments(query),
+        User.find(query).skip(Number(desde)).limit(Number(limite))
+    ]);
+    
     res.json( {
-        message: 'get API - Controller',
-        q,
-        nombre,
-        apikey,
-        page,
-        limit
+        total,
+        users
     } );
 }
 
@@ -46,7 +48,7 @@ const postUser = async( req, res = response ) => {
 const putUser = async( req, res = response ) => {
 
     const id = req.params.id
-    const {passwordUser, googleUser, ...resto} = req.body;
+    const {_id, passwordUser, googleUser, ...resto} = req.body;
 
     //TODO: Validar contra Base de Datos.
     if( passwordUser ) {
@@ -56,10 +58,7 @@ const putUser = async( req, res = response ) => {
 
     const user = await User.findByIdAndUpdate( id, resto );
 
-    res.json( {
-        message: 'put API - Controller',
-        user
-    } );
+    res.json(user);
 }
 
 //Metodo Patch
@@ -71,11 +70,16 @@ const patchUser = ( req, res = response ) => {
 }
 
 //Metodo DELETE para borrar un registro permanentemente
-const deleteUser = ( req, res = response ) => {
+const deleteUser = async( req, res = response ) => {
 
-    res.json( {
-        message: 'delete API - Controller'
-    } );
+    const { id } = req.params
+
+    //Borrar Fisicamente el registro de la base de datos
+    //const user = await User.findByIdAndDelete( id );
+
+    const user = await User.findByIdAndUpdate( id, {stateUser: false} );
+
+    res.json( user );
 }
 
 //---------------------------EXPORTACIONES DE FUNSIONES O VARIBALES---------------------------//

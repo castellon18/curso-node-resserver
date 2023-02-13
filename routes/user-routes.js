@@ -22,7 +22,8 @@ router.get('/', getUser);
 
 router.put('/:id', [
     check('id', 'ID no valido').isMongoId(),
-    check('id').custom(existsIDbyUser),
+    check('id').custom( existsIDbyUser ),
+    check('rolUser').custom(esRolValido),
     validarCampos
 ], putUser);
 
@@ -39,7 +40,11 @@ router.post('/',[
 
 router.patch('/', patchUser);
 
-router.delete('/', deleteUser);
+router.delete('/:id',[
+    check('id', 'ID no valido').isMongoId(),
+    check('id').custom( existsIDbyUser ),
+    validarCampos
+], deleteUser);
 
 //---------------------------EXPORTACIONES DE FUNSIONES O VARIBALES---------------------------//
 

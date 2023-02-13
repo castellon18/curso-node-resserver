@@ -24,9 +24,9 @@ const emailExists = async(emailUser) => {
 
 //Verificar si el ID Existe
 const existsIDbyUser = async(id) => {
-    const idUser = await User.findOne( { id } );
-    if( idUser ) {
-        throw new Error(`El ID ${ idUser } No existe en los registros`);
+    const existsIdUser = await User.findById( id );
+    if( !existsIdUser ) {
+        throw new Error(`El ID ${ id } no existe en los registros`);
     }
 }
 
