@@ -1,12 +1,13 @@
 //---------------------------IMPORTACIONES---------------------------//
 
 //Importaciones de paquetes de dependencias
-const { response } = require( 'express' );
+const { response, json } = require( 'express' );
 const bcrypt = require( 'bcryptjs' );
 
 //Importaciones de funsiones ubicadios en otras carpetas
 const User = require( '../models/model-usuario' );
 const { generarJWT } = require('../helpers/generar-jwt');
+const { googleVerify } = require('../helpers/google-verify');
 
 //---------------------------ELABORACION DE FUNSIONES FLECHA ASINCRONAS O SINCRONAS---------------------------//
 
@@ -52,7 +53,58 @@ const login = async(req, res = response) => {
     }
 }
 
+const googleSingIn = async(req, res = response, next) => {
+
+    const { id_token } = req.body;
+
+    try {
+        
+        const { nameUser, imageUser, emailUser } = await googleVerify( id_token );
+
+        let user = await User.findOne({ emailUser });
+        
+        if( !user ) {
+            //Tengo que crearlo
+            const data = {
+                nameUser,
+                emailUser,
+                passwordUser: '123456',
+                rolUser: "USER_ROL",
+                imageUser,
+                googleUser: true
+            };
+
+            user = new User(data);
+            await user.save();
+        }
+
+        //Si el usuario en BD tiene estado = false
+        if( !user.stateUser ) {
+            return res.status(401).json({
+                msg: 'Hable con el administrador, usuario bloqueado'
+            })
+        }
+
+        //Generar el JWT
+        const token = await generarJWT( user.id );
+
+        res.json({
+            user,
+            token
+        });
+
+    } catch (error) {
+        res.status(400).json({
+            ok: false,
+            msg: 'El token no se pudo verificar'
+        })
+    }
+}
+
 
 //---------------------------EXPORTACIONES DE FUNSIONES O VARIBALES---------------------------//
 
-module.exports = login;
+module.exports = {
+    login,
+    googleSingIn
+};

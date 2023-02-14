@@ -5,7 +5,7 @@ const { Router } = require( 'express' );
 const { check } = require('express-validator');
 
 //Importaciones de funsiones ubicadios en otras carpetas
-const login = require('../controllers/auth-controller');
+const { login, googleSingIn } = require('../controllers/auth-controller');
 const { validarCampos } = require('../middlewares/validar-campos-usuario');
 
 //---------------------------INICIALIZACIONES DE VARIABLES---------------------------//
@@ -22,6 +22,11 @@ router.post('/login', [
     check('passwordUser', 'El password es obligatorio').not().isEmpty(),
     validarCampos
 ] ,login);
+
+router.post('/google', [
+    check('id_token', 'id_token de google es necesario').not().isEmpty(),
+    validarCampos
+] ,googleSingIn);
 
 //---------------------------EXPORTACIONES DE FUNSIONES O VARIBALES---------------------------//
 

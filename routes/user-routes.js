@@ -5,9 +5,12 @@ const { Router } = require( 'express' );
 const { check } = require('express-validator');
 
 //Importaciones de funsiones ubicadios en otras carpetas
-const { validarCampos } = require( '../middlewares/validar-campos-usuario' );
-const { validarJWT } = require('../middlewares/validar-jwt');
-const { esAminRol } = require('../middlewares/validar-roles');
+const { 
+    validarCampos,
+    validarJWT,
+    esAminRol,
+    tieneRol
+} = require( '../middlewares' );
 const { getUser, putUser, postUser, patchUser, deleteUser } = require('../controllers/user-controller');
 const { esRolValido, emailExists, existsIDbyUser } = require('../helpers/db-validators');
 
@@ -44,7 +47,8 @@ router.patch('/', patchUser);
 
 router.delete('/:id',[
     validarJWT,
-    esAminRol,
+    //esAminRol,
+    tieneRol('ADMIN_ROL', 'SALE_ROL'),
     check('id', 'ID no valido').isMongoId(),
     check('id').custom( existsIDbyUser ),
     validarCampos
