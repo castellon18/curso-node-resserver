@@ -4,8 +4,9 @@
 
 const {
     Category,
+    Role,
+    Product,
     User,
-    Role
 } = require('../models');
 
 
@@ -44,11 +45,22 @@ const existsCategoryByID = async(id) => {
     }
 }
 
+//---------------------------Validadores personalizados de Productos---------------------------//
+
+//Verificar si el ID de la Categoria Existe
+const existsProductByID = async(id) => {
+    const existsIdProduct = await Product.findById( id );
+    if( !existsIdProduct ) {
+        throw new Error(`El ID ${ id } no existe en los registros`);
+    }
+}
+
 //---------------------------EXPORTACIONES DE FUNSIONES O VARIBALES---------------------------//
 
 module.exports = {
     esRolValido,
     emailExists,
     existsIDbyUser,
-    existsCategoryByID
+    existsCategoryByID,
+    existsProductByID
 }
