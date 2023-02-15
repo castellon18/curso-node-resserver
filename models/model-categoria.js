@@ -5,13 +5,14 @@ const {Schema, model} = require('mongoose');
 
 //---------------------------ELABORACION DE FUNSIONES FLECHAS---------------------------//
 
-const CategorySchema = Schema({
+const CategorySchema = new Schema({
 
-    nameCategoria: {
+    nameCategory: {
         type: String,
-        require: [true, 'El nombre de la Categoria es obligatoria']
+        require: [true, 'El nombre de la Categoria es obligatoria'],
+        unique: true
     },
-    stateCategoria: {
+    stateCategory: {
         type: Boolean,
         default: true,
         require: true
@@ -22,6 +23,11 @@ const CategorySchema = Schema({
         require: true
     }
 });
+
+CategorySchema.methods.toJSON = function() {
+    const{ __v, stateCategory, ...category } = this.toObject();
+    return category
+}
 
 //---------------------------EXPORTACIONES DE FUNSIONES O VARIBALES---------------------------//
 

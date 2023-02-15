@@ -1,11 +1,15 @@
 //---------------------------IMPORTACIONES---------------------------//
 
 //Importaciones de funsiones ubicadios en otras carpetas
-const Role = require('../models/model-role');
-const User = require( '../models/model-usuario' );
+
+const {
+    Category,
+    User,
+    Role
+} = require('../models');
 
 
-//---------------------------ELABORACION DE FUNSIONES FLECHA ASINCRONAS---------------------------//
+//---------------------------Validadores personalizados de Usuarios---------------------------//
 
 const esRolValido = async(rolUser = '') => {
     const existsRol = await Role.findOne({ rolUser });
@@ -22,10 +26,20 @@ const emailExists = async(emailUser) => {
     }
 }
 
-//Verificar si el ID Existe
+//Verificar si el ID del Usuario Existe
 const existsIDbyUser = async(id) => {
     const existsIdUser = await User.findById( id );
     if( !existsIdUser ) {
+        throw new Error(`El ID ${ id } no existe en los registros`);
+    }
+}
+
+//---------------------------Validadores personalizados de Categorias---------------------------//
+
+//Verificar si el ID de la Categoria Existe
+const existsCategoryByID = async(id) => {
+    const existsIdCat = await Category.findById( id );
+    if( !existsIdCat ) {
         throw new Error(`El ID ${ id } no existe en los registros`);
     }
 }
@@ -35,5 +49,6 @@ const existsIDbyUser = async(id) => {
 module.exports = {
     esRolValido,
     emailExists,
-    existsIDbyUser
+    existsIDbyUser,
+    existsCategoryByID
 }
