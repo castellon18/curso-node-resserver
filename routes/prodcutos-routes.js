@@ -44,7 +44,7 @@ router.post( '/', [
     validarCampos
 ], crearProducto );
 
-//Actualizar Categorias - privado - solo un usuario con un token valido
+//Actualizar Producto - privado - solo un usuario con un token valido
 router.put( '/:id',[
     validarJWT,
     check('id', 'Id no valido').isMongoId(),
@@ -53,7 +53,7 @@ router.put( '/:id',[
     validarCampos
 ], actualizarProducto );
 
-//Borrar Categorias - privado - solo el Admin
+//Borrar Producto - privado - solo el Admin
 router.delete( '/:id', [
     validarJWT,
     esAminRol,

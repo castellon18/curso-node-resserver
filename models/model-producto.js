@@ -28,6 +28,9 @@ const ProductSchema = new Schema({
         type: Boolean,
         default: true
     },
+    image: {
+        type: String
+    },
     stateProduct: {
         type: Boolean,
         default: true,

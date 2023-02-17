@@ -5,8 +5,10 @@ const { Router } = require( 'express' );
 const { check } = require('express-validator');
 
 //Importaciones de funsiones ubicadios en otras carpetas
-const { login, googleSingIn } = require('../controllers/auth-controller');
-const { validarCampos } = require('../middlewares/validar-campos');
+const { validarCampos, validateFileUpload } = require('../middlewares');
+const { uploadFile, updateImage, showImage } = require('../controllers/upload-controller');
+const { collectionAllowed }       = require( '../helpers' );
+
 
 //---------------------------INICIALIZACIONES DE VARIABLES---------------------------//
 
@@ -17,16 +19,20 @@ const router = Router();
 
 //Rutas(endpoint) para las diferentes Peticiones(request)
 
-router.post('/login', [
-    check('emailUser', 'El Correo no es Valido').isEmail(),
-    check('passwordUser', 'El password es obligatorio').not().isEmpty(),
-    validarCampos
-] ,login);
+router.post( '/', validateFileUpload, uploadFile );
 
-router.post('/google', [
-    check('id_token', 'id_token de google es necesario').not().isEmpty(),
+router.put( '/:collection/:id', [
+    validateFileUpload,
+    check('id', 'El id no es valido').isMongoId(),
+    check( 'collection' ).custom( c => collectionAllowed( c, ['usuarios','productos'] ) ),
     validarCampos
-] ,googleSingIn);
+], updateImage );
+
+router.get('/:collection/:id', [
+    check('id', 'El id no es valido').isMongoId(),
+    check( 'collection' ).custom( c => collectionAllowed( c, ['usuarios','productos'] ) ),
+    validarCampos
+], showImage );
 
 //---------------------------EXPORTACIONES DE FUNSIONES O VARIBALES---------------------------//
 

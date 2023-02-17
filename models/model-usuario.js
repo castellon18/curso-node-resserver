@@ -19,7 +19,7 @@ const UserSchema = new Schema( {
         type: String,
         required: [true, 'La Contraseña es Obligatoria']
     },
-    imageUser: {
+    image: {
         type: String
     },
     rolUser: {

@@ -12,6 +12,7 @@ const {
 
 //---------------------------Validadores personalizados de Usuarios---------------------------//
 
+//Verificar si es un Rol Valido
 const esRolValido = async(rolUser = '') => {
     const existsRol = await Role.findOne({ rolUser });
     if( !existsRol ) {
@@ -55,6 +56,17 @@ const existsProductByID = async(id) => {
     }
 }
 
+//---------------------------Validadores personalizados de Colecciones permitidas---------------------------//
+
+const collectionAllowed = ( collection = '', collections = [] ) => {
+
+    const isInclude = collections.includes( collection );
+    if( !isInclude ) {
+        throw new Error( `La colección ${ collection } no es permitida - collecciones permitidas ${ collections }` );
+    }
+    return true;
+}
+
 //---------------------------EXPORTACIONES DE FUNSIONES O VARIBALES---------------------------//
 
 module.exports = {
@@ -62,5 +74,6 @@ module.exports = {
     emailExists,
     existsIDbyUser,
     existsCategoryByID,
-    existsProductByID
+    existsProductByID,
+    collectionAllowed
 }
